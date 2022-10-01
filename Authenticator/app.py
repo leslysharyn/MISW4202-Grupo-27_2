@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .modelo import db, Usuario
 import secrets
 from cryptography.fernet import Fernet
+import json
 
 app = create_app('Authenticator')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///authenticator.db'
@@ -42,9 +43,13 @@ class VistaAuthenticator(Resource):
         if usuario:
             if check_password_hash(usuario.contrasena, request.json["contrasena"]):
                 token_de_acceso = create_access_token(identity=usuario.id)
-                print(token_de_acceso)
-                print(str(usuario.skey))
-                return {"mensaje": "usuario autenticado exitosamente", "token": token_de_acceso, "usuario_id": usuario.id, "skey": usuario.skey}
+                result = json.dumps({
+                    "mensaje": "usuario autenticado exitosamente",
+                    "token": token_de_acceso,
+                    "usuario_id": usuario.id,
+                    "skey": usuario.skey
+                })
+                return {"mensaje": "usuario autenticado exitosamente","token": token_de_acceso,"usuario_id": usuario.id,"skey": usuario.skey}, 200
             else:
                 return {"mensaje": "usuario o contraseña incorrecta"}
 

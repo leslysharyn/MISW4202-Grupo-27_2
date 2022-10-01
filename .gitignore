@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -106,7 +104,6 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
->>>>>>> df67e52e608f2bbe4063b49166d31fe40af5e438
 # Environments
 .env
 .venv
@@ -115,13 +112,11 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-<<<<<<< HEAD
 virtualenviroment/
 
 # cache
 .__pycache__
 __pycache__/
-=======
 
 # Spyder project settings
 .spyderproject
@@ -148,8 +143,6 @@ dmypy.json
 cython_debug/
 
 #VSC Settings
-.vscode
 
 #DataBase
 test.db
->>>>>>> df67e52e608f2bbe4063b49166d31fe40af5e438
