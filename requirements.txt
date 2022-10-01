@@ -41,3 +41,4 @@ vine==5.0.0
 wcwidth==0.2.5
 Werkzeug==2.0.1
 wrapt==1.12.1
+cryptography==3.4.7
