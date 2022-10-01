@@ -16,8 +16,8 @@ class VistaAlarm(Resource):
 
     def post(sefl): 
         urlBase = 'http://127.0.0.1:5000/login'
-        data = {'usuario':'Luis', 'contrasena': '12345678'}
-        r = requests.post(urlBase, data=json.dumps(data))
+        usuario= (request.json["usuario"], request.json["contrasena"])
+        r = requests.post(urlBase, usuario)
        
         print(r.status_code, r.reason)       
         
