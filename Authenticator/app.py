@@ -22,15 +22,12 @@ db.create_all()
 cors = CORS(app)
 
 api = Api(app)
-key = "Esta3sNu3straKey#$%!"
-fernet = Fernet(key)
 
 class VistaSignIn(Resource):
 
     def post(self):
-        newKey = secrets.token_hex(8)
-        encMessage = fernet.encrypt(newKey.encode())
-        nuevo_usuario = Usuario(usuario=request.json["usuario"], contrasena=generate_password_hash(request.json["contrasena"]), skey=encMessage)
+        newKey = secrets.token_hex(16)
+        nuevo_usuario = Usuario(usuario=request.json["usuario"], contrasena=generate_password_hash(request.json["contrasena"]), skey=newKey)
         db.session.add(nuevo_usuario)
         db.session.commit()
         token_de_acceso = create_access_token(identity=nuevo_usuario.id)
@@ -45,6 +42,8 @@ class VistaAuthenticator(Resource):
         if usuario:
             if check_password_hash(usuario.contrasena, request.json["contrasena"]):
                 token_de_acceso = create_access_token(identity=usuario.id)
+                print(token_de_acceso)
+                print(str(usuario.skey))
                 return {"mensaje": "usuario autenticado exitosamente", "token": token_de_acceso, "usuario_id": usuario.id, "skey": usuario.skey}
             else:
                 return {"mensaje": "usuario o contraseña incorrecta"}
