@@ -5,6 +5,8 @@ from flask_jwt_extended import jwt_required, create_access_token, JWTManager
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from .modelo import db, Usuario
+import secrets
+from cryptography.fernet import Fernet
 
 app = create_app('Authenticator')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///authenticator.db'
@@ -20,11 +22,15 @@ db.create_all()
 cors = CORS(app)
 
 api = Api(app)
+key = "Esta3sNu3straKey#$%!"
+fernet = Fernet(key)
 
 class VistaSignIn(Resource):
 
     def post(self):
-        nuevo_usuario = Usuario(usuario=request.json["usuario"],contrasena=generate_password_hash(request.json["contrasena"]))
+        newKey = secrets.token_hex(8)
+        encMessage = fernet.encrypt(newKey.encode())
+        nuevo_usuario = Usuario(usuario=request.json["usuario"], contrasena=generate_password_hash(request.json["contrasena"]), skey=encMessage)
         db.session.add(nuevo_usuario)
         db.session.commit()
         token_de_acceso = create_access_token(identity=nuevo_usuario.id)
@@ -39,7 +45,7 @@ class VistaAuthenticator(Resource):
         if usuario:
             if check_password_hash(usuario.contrasena, request.json["contrasena"]):
                 token_de_acceso = create_access_token(identity=usuario.id)
-                return {"mensaje": "usuario autenticado exitosamente", "token": token_de_acceso, "usuario_id": usuario.id}
+                return {"mensaje": "usuario autenticado exitosamente", "token": token_de_acceso, "usuario_id": usuario.id, "skey": usuario.skey}
             else:
                 return {"mensaje": "usuario o contraseña incorrecta"}
 
